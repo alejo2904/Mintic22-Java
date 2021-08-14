@@ -28,53 +28,49 @@ class Reto1 {
      * método principal
      */
     public void run() {
-        // Declara variables
-        double m, a; // Variables de masa y altura
-        int edad; // Variable de edad
-        String riesgo = ""; // Variable de Nivel de Riesgo
-
         // Consumir el metodo read
-        String dat = read();
+        String datos = read();
 
-        //  Convetir cadena en una lista      
-        String[] list = dat.split(" ");
+        //  Convetir cadena en una lista 
+        String[] lista = datos.split(" ");
 
-        // Parsear los valores de string a double        
-        m = Double.parseDouble(list[0]);
-        a = Double.parseDouble(list[1]);
-        edad = Integer.parseInt(list[2]);
+        // Parsear los valores de string a double
+        double masa = Double.parseDouble(lista[0]);
+        double altura = Double.parseDouble(lista[1]);
+        int edad = Integer.parseInt(lista[2]);
+        String riesgo = "";
 
-        // calculo para indice de masa        
-        double indiceM = m / (a * a);
+        // calculo para indice de masa
+        double indiceMasaCorporal = masa / (altura * altura);
+
         /**
          * Validar los 3 tipos de restriccion validar masa validar altura
          * validar edad
          */
-        if (m > 0 && m < 150) {
-            if (a > 0.1 && a < 2.5) {
-                if (edad > 0 && edad < 110) {
+        if (masa >= 0 && masa <= 150) {
+            if (altura >= 0.1 && altura <= 2.5) {
+                if (edad >= 0 && edad <= 110) {
 
                     /**
                      * Comparar tabla de riesgos cargar variable riesgo
                      */
                     if (edad <= 45) {
-                        if (indiceM <= 22) {
+                        if (indiceMasaCorporal <= 22) {
                             riesgo = "Bajo";
-                        } else if (indiceM > 22) {
+                        } else {
                             riesgo = "Medio";
                         }
-                    } else if (edad > 45) {
-                        if (indiceM <= 22) {
+                    } else {
+                        if (indiceMasaCorporal <= 22) {
                             riesgo = "Medio";
-                        } else if (indiceM > 22) {
+                        } else {
                             riesgo = "Alto";
                         }
                     }
-
-                    //   Redondear a dos dijitos el Indice de Masa                  
-                    String red = String.format("%.2f", indiceM);
-                    //  Mensaje de salida                   
-                    System.out.println(red + " " + riesgo);
+                    
+                    //   Redondear a dos dijitos el Indice de Masa
+                    String IMC = String.format("%.2f", indiceMasaCorporal);
+                    System.out.println(IMC+" "+riesgo); //  Mensaje de salida 
 
                 /**
                 * En caso de fallar una de las 3 condiciones iniciales
