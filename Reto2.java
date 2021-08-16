@@ -1,76 +1,67 @@
+package reto2;
+
 import java.util.HashMap;
 import java.util.Scanner;
 
-/*
-* Recomendaciones Generales:
-*
-*    -> El método run() funcionará como nuestro método principal
-*    -> No declarar objetos de tipo Scanner, utilizar el método read() para solicitar datos al usuario.
-*    -> Si requiere utilizar varias clases, estas NO deben ser tipo public.
- */
 /**
- * Clase principal para el Reto2
+ *
+ * @author yeiimaccdev
  */
-class Reto2 {
+public class Reto2 {
 
     /**
-     * Este debe ser el único objeto de tipo Scanner en el código
+     * @param args the command line arguments
      */
-    private final Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+        Scanner leer = new Scanner(System.in);
 
-    /**
-     * Este método es usado para solicitar datos al usuario
-     *
-     * @return Lectura de la siguiente linea del teclado
-     */
-    public String read() {
-        return this.scanner.nextLine();
-    }
+        String operacion = leer.nextLine();
+        String productoCadena = leer.nextLine();
+        String[] lista = productoCadena.split(" ");
 
-    /**
-     * método principal
-     */
-    public void run() {
+        int codigo = Integer.parseInt(lista[0]);
+        String nombre = lista[1];
+        double precio = Double.parseDouble(lista[2]);
+        int inventario = Integer.parseInt(lista[3]);
 
-        /**
-         * Consumir el metodo read para almacenar datos
-         */
-        String accion = read();
-        String product = read();
-        String[] listadDatos = product.split(" ");
+        Producto producto = new Producto(codigo, nombre, precio, inventario);
+        BaseDatosProductos bdProductos = new BaseDatosProductos();
 
-        Producto producto = new Producto(Integer.parseInt(listadDatos[0]), listadDatos[1],
-                Double.parseDouble(listadDatos[2]), Integer.parseInt(listadDatos[3])); 
-        BaseDatosProductos baseProductos = new BaseDatosProductos(); 
-
-        if (!baseProductos.verificarExistencia(producto) && accion.equals("AGREGAR")) { 
-            baseProductos.agregar(producto);
-            baseProductos.informe();
-
-        } else if (baseProductos.verificarExistencia(producto) && accion.equals("ACTUALIZAR")) {
-            baseProductos.actualizar(producto);
-            baseProductos.informe();
-
-        } else if (baseProductos.verificarExistencia(producto) && accion.equals("BORRAR")) {
-            baseProductos.borrar(producto);
-            baseProductos.informe();
-        } else {
-            System.out.println("ERROR");
+        if (!bdProductos.verificarExistencia(producto)) { //5 false != true
+            if (operacion.equals("AGREGAR")) {
+                bdProductos.agregar(producto);
+                bdProductos.generarInforme();
+            } else {
+                System.out.println("ERROR");
+            }
+        } else if (bdProductos.verificarExistencia(producto)) {
+            if (operacion.equals("ACTUALIZAR")) {
+                bdProductos.actualizar(producto);
+                bdProductos.generarInforme();
+            } else if (operacion.equals("BORRAR")) {
+                bdProductos.borrar(producto);
+                bdProductos.generarInforme();
+            } else {
+                System.out.println("ERROR");
+            }
         }
     }
-}
+       // fin main
+} // Fin clase reto2
 
-/**
- * Clase para producto
- */
 class Producto {
 
+    //Atributos
     private int codigo;
     private String nombre;
     private double precio;
     private int inventario;
 
-    
+    // constructor 
+    public Producto() {
+
+    }
+
     public Producto(int codigo, String nombre, double precio, int inventario) {
         this.codigo = codigo;
         this.nombre = nombre;
@@ -109,15 +100,13 @@ class Producto {
     public void setInventario(int inventario) {
         this.inventario = inventario;
     }
-}
+}// Fin clase producto
 
-/**
- * Clase BaseDatosProductos
- */
 class BaseDatosProductos {
 
     private HashMap<Integer, Producto> listaProductos = new HashMap<>();
 
+    // Constructor
     public BaseDatosProductos() {
         listaProductos.put(1, new Producto(1, "Manzanas", 8000, 65));
         listaProductos.put(2, new Producto(2, "Limones", 2300, 15));
@@ -131,23 +120,23 @@ class BaseDatosProductos {
         listaProductos.put(10, new Producto(10, "Jamon", 15000, 10));
     }
 
-    public boolean verificarExistencia(Producto producto) {
-        return listaProductos.containsKey(producto.getCodigo());
+    public boolean verificarExistencia(Producto p) {
+        return listaProductos.containsKey(p.getCodigo()); // true - false
     }
 
-    public void agregar(Producto producto) {
-        listaProductos.put(producto.getCodigo(), producto);
+    public void agregar(Producto p) {
+        listaProductos.put(p.getCodigo(), p);
     }
 
-    public void actualizar(Producto producto) {
-        listaProductos.replace(producto.getCodigo(), producto);
+    public void actualizar(Producto p) {
+        listaProductos.replace(p.getCodigo(), p);
     }
 
-    public void borrar(Producto producto) {
-        listaProductos.remove(producto.getCodigo());
+    public void borrar(Producto p) {
+        listaProductos.remove(p.getCodigo());
     }
 
-    public void informe() {
+    public void generarInforme() {
         String nombreMayor = productoMayor();
         String nombreMenor = productoMenor();
         String promedio = promedio();
@@ -157,11 +146,11 @@ class BaseDatosProductos {
 
     private String productoMayor() {
         String nombre = "";
-        double precioAuxiliar = 0;
-        for (Producto productoItems : listaProductos.values()) {
-            if (productoItems.getPrecio() > precioAuxiliar) {
-                nombre = productoItems.getNombre();
-                precioAuxiliar = productoItems.getPrecio();
+        double precioAux = 0;
+        for (Producto p : listaProductos.values()) {
+            if (p.getPrecio() > precioAux) {
+                nombre = p.getNombre();
+                precioAux = p.getPrecio();
             }
         }
         return nombre;
@@ -169,33 +158,34 @@ class BaseDatosProductos {
 
     private String productoMenor() {
         String nombre = "";
-        double Auxiliar = listaProductos.values().iterator().next().getPrecio();
-        for (Producto productoItems : listaProductos.values()) {
-            if (productoItems.getPrecio() < Auxiliar) {
-                nombre = productoItems.getNombre();
-                Auxiliar = productoItems.getPrecio();
+        double precioAux = listaProductos.values().iterator().next().getPrecio();
+        for (Producto p : listaProductos.values()) {
+            if (p.getPrecio() < precioAux) {
+                nombre = p.getNombre();
+                precioAux = p.getPrecio();
             }
         }
         return nombre;
     }
 
     private String promedio() {
-        double acumular = 0;
-        double res = 0;
-        for (Producto productoItems : listaProductos.values()) {
-            acumular += productoItems.getPrecio();
+        double suma = 0;
+        double resultado = 0;
+        for (Producto p : listaProductos.values()) {
+            suma += p.getPrecio();
         }
-        res = acumular / listaProductos.size();
-        return String.format("%.1f", res);
+        resultado = suma / listaProductos.size();
+        return String.format("%.1f", resultado);
     }
 
     private String total() {
-        double acumular = 0;
-        double res = 0;
-        for (Producto productoItems : listaProductos.values()) {
-            acumular = productoItems.getPrecio() * productoItems.getInventario();
-            res += acumular;
+        double suma = 0;
+        double resultado = 0;
+        for (Producto p : listaProductos.values()) {
+            suma = p.getPrecio() * p.getInventario();
+            resultado += suma;
         }
-        return String.format("%.1f", res);
+        return String.format("%.1f", resultado);
     }
-}
+
+} //fin de la clase BaseDatosProductos 
