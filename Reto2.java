@@ -27,23 +27,19 @@ public class Reto2 {
         Producto producto = new Producto(codigo, nombre, precio, inventario);
         BaseDatosProductos bdProductos = new BaseDatosProductos();
 
-        if (!bdProductos.verificarExistencia(producto)) { //5 false != true
-            if (operacion.equals("AGREGAR")) {
-                bdProductos.agregar(producto);
-                bdProductos.generarInforme();
-            } else {
-                System.out.println("ERROR");
-            }
-        } else if (bdProductos.verificarExistencia(producto)) {
-            if (operacion.equals("ACTUALIZAR")) {
-                bdProductos.actualizar(producto);
-                bdProductos.generarInforme();
-            } else if (operacion.equals("BORRAR")) {
-                bdProductos.borrar(producto);
-                bdProductos.generarInforme();
-            } else {
-                System.out.println("ERROR");
-            }
+        if (!baseProductos.verificarExistencia(producto) && operacion.equals("AGREGAR")) { //Validacion de accion y verificar existencia
+            baseProductos.agregar(producto);
+            baseProductos.informes();
+
+        } else if (baseProductos.verificarExistencia(producto) && operacion.equals("ACTUALIZAR")) {//Validacion de accion y verificar existencia
+            baseProductos.actualizar(producto);
+            baseProductos.informes();
+
+        } else if (baseProductos.verificarExistencia(producto) && operacion.equals("BORRAR")) {//Validacion de accion y verificar existencia
+            baseProductos.borrar(producto);
+            baseProductos.informes();
+        } else {//Validacion en caso de error
+            System.out.println("ERROR");
         }
     }
        // fin main
